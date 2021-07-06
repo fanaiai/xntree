@@ -104,7 +104,7 @@ class xnTree {
         this.openNumber = 0;
         this.dom = '<div class="xntree-cont">'
         this.index = 0;
-        this.dom += this._rendHTML(this.data, 0, true, 0) + "</div>"
+        this.dom += this._rendHTML(this.data, 0) + "</div>"
         let movedom = this.addMoveDom();
         let scrollDom = '<div class="xntree-scroll" style="height:' + this.openNumber * 32 + 'px"></div>'
         this.container.innerHTML = scrollDom + this.dom + movedom;
