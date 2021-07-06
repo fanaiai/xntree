@@ -1,0 +1,99 @@
+.xntree-outer{
+    position: relative;
+}
+.xntree-cont{
+    position: absolute;
+    top:0;
+    left: 0;
+    overflow: hidden;
+    transform-origin: left top;
+    width: 100%;
+}
+.xntree-scroll{
+
+}
+.xntree-item{
+    display: flex;
+    line-height: 32px;
+    font-size: 14px;
+    /*padding-left:40px;*/
+    position: relative;
+    align-items: center;
+}
+.xntree-item.on{
+    background: #30a8fd;
+    color: #fff;
+}
+.xntree-item.on{
+
+}
+.xn-slidedown,.xn-folder{
+    /*position: absolute;*/
+    width:15px;
+    left:0;
+}
+.xn-slidedown:not(.down){
+    transform:rotateZ(-90deg);
+}
+.xn-folder{
+    left:15px;
+}
+.xn-tree-icons{
+    width: 30px;
+    flex: 0 0 30px;
+    display: flex;
+    color: #666;
+    justify-content: space-between;
+}
+.xn-tree-icons a{
+    flex: 1;
+    width: 50%;
+}
+.xn-indent{
+    display: inline-block;
+    width:15px;
+    flex: 0 0 15px;
+}
+.xn-checkbox,.xn-radio{
+    width:12px;
+    height: 12px;
+    border:1px solid #ccc;
+    margin:0 4px;
+    flex: 0 0 12px;
+    cursor: pointer;
+}
+.xn-radio{
+    border-radius: 50%;
+}
+.xn-checkbox.on,.xn-radio.on{
+    background:#4a9bfe;
+}
+.xn-checkbox.disable,.xn-radio.disable{
+    background:#ccc;
+}
+.xn-hide,.xn-hide-sub{
+    display: none;
+}
+.xntree-label{
+    white-space: nowrap;
+    cursor: pointer;
+    flex: auto;
+}
+.xntree-move{
+    width: 200px;
+    height: 1px;
+    background: #333;
+    position: absolute;
+    display: none;
+}
+.xntree-item{
+    user-select: none;
+}
+.xn-moving .xntree-item.xn-onmoving{
+    background: #f1fa8c;
+}
+.xn-searchedkey{
+    color: #fff;
+    background: #0bb56e;
+}
+

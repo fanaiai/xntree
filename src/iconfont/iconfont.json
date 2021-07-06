@@ -1,0 +1,30 @@
+{
+  "id": "2644529",
+  "name": "仙女座TREE",
+  "font_family": "iconfontxntree",
+  "css_prefix_text": "icon-xntree",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "9924993",
+      "name": "file",
+      "font_class": "file",
+      "unicode": "ea28",
+      "unicode_decimal": 59944
+    },
+    {
+      "icon_id": "1278128",
+      "name": "展开1",
+      "font_class": "zhankai1",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
+    },
+    {
+      "icon_id": "21067000",
+      "name": "文件夹",
+      "font_class": "wenjianjia",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    }
+  ]
+}

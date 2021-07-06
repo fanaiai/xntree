@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "iconfontxntree"; /* Project id 2644529 */
+  src: url('iconfont.woff2?t=1625556504198') format('woff2'),
+       url('iconfont.woff?t=1625556504198') format('woff'),
+       url('iconfont.ttf?t=1625556504198') format('truetype');
+}
+
+.iconfontxntree {
+  font-family: "iconfontxntree" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-xntreefile:before {
+  content: "\ea28";
+}
+
+.icon-xntreezhankai1:before {
+  content: "\e66d";
+}
+
+.icon-xntreewenjianjia:before {
+  content: "\e625";
+}
+
