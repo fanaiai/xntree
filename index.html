@@ -42,26 +42,59 @@
         .xn-tree-container{
             padding:20px;
         }
+        .btns a{
+            font-size:14px;
+            background: #4a9bfe;
+            color: #fff;
+            padding:0 10px;
+            line-height: 32px;
+            margin-bottom: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
     </style>
     <!--    <script src="./src/xnTree.js"></script>-->
 </head>
 <body>
 <div class="xn-tree-container">
-    <div align="left">
+    <h3>完整功能</h3>
+    <div class="btns">
         <a id="checkAll">全选</a>
         <a id="checkAllSearch">全选(仅搜索结果项)</a>
         <a id="clearAll">全清</a>
         <a id="addRoot">添加根节点</a>
     </div>
-    <input id="keyword" autocomplete="off" placeholder="请输入关键词回车搜索">
+    <input id="keyword" autocomplete="off" placeholder="请输入关键词回车搜索,搜索结果包含子节点">
     <div class="tree" id="tree"></div>
+</div>
+<div class="xn-tree-container">
+    <h3>单选框</h3>
+    <div class="btns">
+    </div>
+<!--    <input id="keyword" autocomplete="off" placeholder="请输入关键词回车搜索,搜索结果包含子节点">-->
+    <div class="tree" id="tree1"></div>
+</div>
+
+<div class="xn-tree-container">
+    <h3>无复选框和单选框</h3>
+    <div class="btns">
+    </div>
+    <!--    <input id="keyword" autocomplete="off" placeholder="请输入关键词回车搜索,搜索结果包含子节点">-->
+    <div class="tree" id="tree2"></div>
+</div>
+
+<div class="xn-tree-container">
+    <h3>自定义显示内容</h3>
+    <div class="btns">
+    </div>
+    <!--    <input id="keyword" autocomplete="off" placeholder="请输入关键词回车搜索,搜索结果包含子节点">-->
+    <div class="tree" id="tree3"></div>
 </div>
 
 </body>
 <script type="module">
     // import xnTree from './xntree.min.js'
     import {data, data1, data2,bigdata} from './static/data.js'
-
     let replaceKey = (text, keyword) => {
         if (!keyword || keyword.trim() == '') {
             return text;
