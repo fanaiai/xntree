@@ -97,6 +97,9 @@
             }
         }
         let xntree = new xnTree(document.querySelector('#tree'), bigdata, option)
+## 初始化参数
+    let xntree = new xnTree(容器 element, 数据 data, 配置 option)
+
 ## 方法
 + 日期格式化 xndatepicker.format(date,formatString)
 + 销毁实例 xndatepicker.destroy()
