@@ -5,6 +5,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
+// const EsmWebpackPlugin = require('@purtuga/esm-webpack-plugin');
 module.exports = (env) => {
     return {
         mode: 'development',
@@ -37,10 +38,13 @@ module.exports = (env) => {
                     },
                 ],
             }),
+            // new EsmWebpackPlugin()
         ],
         output: {
             filename: '[name].min.js',
             path: path.resolve(__dirname, 'dist'),
+            // library:"[name].min",
+            // libraryTarget:"var",
             // publicPath: '/',
             environment: {//输出es5的语法，用于兼容ie
                 // The environment supports arrow functions ('() => { ... }').
@@ -56,7 +60,7 @@ module.exports = (env) => {
                 // The environment supports 'for of' iteration ('for (const x of array) { ... }').
                 forOf: false,
                 // The environment supports ECMAScript Module syntax to import ECMAScript modules (import ... from '...').
-                module: false,
+                module: true,
             }
         },
         optimization: {},

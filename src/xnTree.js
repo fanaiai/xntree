@@ -1,4 +1,5 @@
 import './xnTree.css';
+import './colorTheme.css';
 import './xnquery.js';
 import './iconfont/iconfont.css';
 
@@ -6,6 +7,7 @@ let $ = window.XNQuery;
 let defaultOption = {
     label: 'text',
     id: 'id',
+    lineHeight:32,
     // pId: 'parentid',
     selectType: 'checkbox',//radio,null
     checkDisabled: function (d) {
@@ -34,11 +36,12 @@ class xnTree {
         this.container = container;
         this.container.classList.add('xntree-outer')
         this.data = $.extend(true,[],data);
-        this.topIndex = 0;
-        this.bottomIndex = 30;
         this.flatList = {};
         this.flatListKeys = [];
         this.option = $.extend(true, {}, defaultOption, option);
+        this.totalNum=parseInt((this.container.clientHeight||document.body.clientHeight)/this.option.lineHeight);
+        this.topIndex = 0;
+        this.bottomIndex = this.totalNum;
         this.slidedownHTML = {
             'up':'<a class="xn-slidedown iconfontxntree icon-xntreezhankai1"></a>',
             'down':'<a class="xn-slidedown down iconfontxntree icon-xntreezhankai1"></a>',
@@ -94,7 +97,7 @@ class xnTree {
         this.index = 0;
         this.dom += this._rendHTML(this.data, 0) + "</div>"
         let movedom = this.addMoveDom();
-        let scrollDom = '<div class="xntree-scroll" style="height:' + this.openNumber * 32 + 'px"></div>'
+        let scrollDom = '<div class="xntree-scroll" style="height:' + this.openNumber * this.option.lineHeight + 'px"></div>'
         this.container.innerHTML = scrollDom + this.dom + movedom;
         this.movedom = this.container.querySelector('.xntree-move')
         this.scrollDom = this.container.querySelector('.xntree-scroll')
@@ -208,7 +211,6 @@ class xnTree {
             })
         }
         this.refreshDom();
-        this.setCheckedKeys(this.checked.keys)
     }
 
     treeFindPath(tree, func, path = [], result = [], containChild, hasP) {
@@ -295,10 +297,10 @@ class xnTree {
         })
         this.container.addEventListener('scroll', e => {
             let y = (this.container.scrollTop);
-            this.topIndex = Math.floor(y / 32);
-            this.bottomIndex = this.topIndex + 30;
+            this.topIndex = Math.floor(y / this.option.lineHeight);
+            this.bottomIndex = this.topIndex + this.totalNum;
             this.refreshDom(true);
-            this.container.querySelector(".xntree-cont").style.transform = 'translateY(' + (this.topIndex * 32) + 'px)'
+            this.container.querySelector(".xntree-cont").style.transform = 'translateY(' + (this.topIndex * this.option.lineHeight) + 'px)'
         })
     }
 
@@ -308,7 +310,7 @@ class xnTree {
         let dom = this._rendHTML(this.data, 0, justScroll);
         this.container.querySelector(".xntree-cont").innerHTML = dom;
         if (!justScroll) {
-            this.scrollDom.style.height = this.openNumber * 32 + 'px'
+            this.scrollDom.style.height = this.openNumber * this.option.lineHeight + 'px'
         }
     }
 
@@ -487,7 +489,7 @@ class xnTree {
         return indexs;
     }
 
-    setCheckedKeys(keys) {
+    setCheckedKeys(keys,justRend) {
         this.checked.nodes = {};
         for (let i in keys) {
             let id = keys[i]

@@ -9,6 +9,7 @@
     "point-in-polygon": "^1.0.1"
   },
   "devDependencies": {
+    "@purtuga/esm-webpack-plugin": "^1.5.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
