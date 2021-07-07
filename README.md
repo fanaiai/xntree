@@ -18,7 +18,7 @@
 ## 如果本插件不能满足您的使用需求，请提交issue，我将尽快对选择器进行更新。
 
 # 插件样式示例：
-![avatar](https://raw.githubusercontent.com/fanaiai/xndatepicker/main/img/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_16098368986650.png)
+![avatar](https://github.com/fanaiai/xntree/blob/main/1.png?raw=true)
 # 使用步骤
 ### 下载代码
 #### 压缩版本引用
