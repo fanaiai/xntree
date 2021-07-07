@@ -175,9 +175,12 @@ class xnTree {
             ope += `<a class="xntree-delete"></a>`
         }
         ope += `</div>`
-        let selectDom = this.selectHTML[this.option.selectType + (((this.checked.nodes[l[this.option.id]]) || this.checked.nodes[l[this.option.id]]) ? 'on' : '')] || ''
-        if (this.option.checkDisabled(l)) {
-            selectDom = this.selectHTML[this.option.selectType + 'disable']
+        let selectDom = '';
+        if (this.option.selectType) {
+            selectDom = this.selectHTML[this.option.selectType + (((this.checked.nodes[l[this.option.id]]) || this.checked.nodes[l[this.option.id]]) ? 'on' : '')] || ''
+            if (this.option.checkDisabled(l)) {
+                selectDom = this.selectHTML[this.option.selectType + 'disable']
+            }
         }
         let h = `<div class="xntree-item ${!open ? 'xn-hide-sub' : ''} ${(this.clicked && this.clicked[this.option.id] == l.id) ? 'on' : ''}" data-level="${level}" data-id="${l[this.option.id]}">
                     ${span}
@@ -421,13 +424,15 @@ class xnTree {
     }
 
     radioEvent($t) {
-        let p = $t.parents(".xntree-item")[0]
+        let p = $t.parents(".xntree-item").get(0)
         let plevel = parseInt(p.getAttribute('data-level'))
         let id = p.getAttribute('data-id')
         let node = this.getNodeById(id)
         this.checked.keys = [id];
+        this.checked.nodes = {};
         this.checked.nodes[id] = this.getNodeById(id)
         this.refreshDom();
+        this.trigger('checkChange', this.checked)
     }
 
     checkEvent($t) {
@@ -469,6 +474,7 @@ class xnTree {
             }
         }
         this.refreshDom();
+        this.trigger('checkChange', this.checked)
     }
 
     delArrayFromArray(fromArray, delArray) {
@@ -487,19 +493,19 @@ class xnTree {
 
     setCheckedKeys(keys) {
         this.checked.nodes = {};
-        $(this.container).find(".xntree-item .xn-checkbox.on").removeClass('on');
         for (let i in keys) {
             let id = keys[i]
-            let dom = this.container.querySelector(".xntree-item[data-id='" + id + "']");
-            if (dom) {
-                dom.querySelector(".xn-checkbox").classList.add('on');//原生查询比jquery要快很多
-            }
             let node = this.getNodeById(id)
             this.checked.nodes[id] = (node)
         }
         this.checked.keys = keys;
-        if (this.option.on.checkChange) {
-            this.option.on.checkChange(this.checked)
+        this.trigger('checkChange', this.checked)
+        this.rendDom();
+    }
+
+    trigger(type, data) {
+        if (this.option.on[type]) {
+            this.option.on[type](data)
         }
     }
 
@@ -508,6 +514,10 @@ class xnTree {
             return e[this.option.id]
         })
         this.setCheckedKeys(keys)
+    }
+
+    getChecked() {
+        return this.checked;
     }
 
     checkAll(justResult) {//justResult,仅选择当前搜索结果
