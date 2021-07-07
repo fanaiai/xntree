@@ -105,11 +105,12 @@
 }
 .xntree-outer .xntree-item{
     user-select: none;
+    box-sizing: border-box;
 }
-.xntree-outer .xn-moving .xntree-item.xn-onmoving{
+.xntree-outer .xntree-item.xn-onmoving{
     background: var(--xntree-moving-color);
 }
-.xntree-outer .xntree-item:not(.on):hover{
+.xntree-outer .xntree-item:not(.xn-onmoving,.on):hover{
     background: var(--xntree-hover-color);
 }
 .xntree-outer .xn-searchedkey{

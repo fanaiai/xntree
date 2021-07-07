@@ -41,7 +41,7 @@ class xnTree {
         this.option = $.extend(true, {}, defaultOption, option);
         this.totalNum=parseInt((this.container.clientHeight||document.body.clientHeight)/this.option.lineHeight);
         this.topIndex = 0;
-        this.bottomIndex = this.totalNum;
+        this.bottomIndex = this.totalNum+4;
         this.slidedownHTML = {
             'up':'<a class="xn-slidedown iconfontxntree icon-xntreezhankai1"></a>',
             'down':'<a class="xn-slidedown down iconfontxntree icon-xntreezhankai1"></a>',
@@ -159,8 +159,11 @@ class xnTree {
         let label = '';
         if (typeof this.option.label == 'string') {
             label = l[this.option.label]
+            if(this.searchKeyword){
+                label=this.replaceKey(label,this.searchKeyword)
+            }
         } else if (typeof this.option.label == 'function') {
-            label = this.option.label(l)
+            label = this.option.label(l,this,this.searchKeyword)
         }
 
         let ope = `<div class="xntree-ope">`
@@ -181,7 +184,7 @@ class xnTree {
                 selectDom = this.selectHTML[this.option.selectType + 'disable']
             }
         }
-        let h = `<div class="xntree-item ${!open ? 'xn-hide-sub' : ''} ${(this.clicked && this.clicked[this.option.id] == l.id) ? 'on' : ''}" data-level="${level}" data-id="${l[this.option.id]}">
+        let h = `<div class="xntree-item ${!open ? 'xn-hide-sub' : ''} ${(this.clicked && this.clicked[this.option.id] == l[this.option.id]) ? 'on' : ''}" data-level="${level}" data-id="${l[this.option.id]}">
                     ${span}
                     ${pre}   
                     ${selectDom}
@@ -196,6 +199,7 @@ class xnTree {
     search(keyword, func, containChild) {
         let that = this;
         this.seachKeys = null;
+        this.searchKeyword=keyword;
         if (keyword.trim()) {
             if (!func) {
                 func = (d) => {
@@ -215,7 +219,7 @@ class xnTree {
 
     treeFindPath(tree, func, path = [], result = [], containChild, hasP) {
         for (const data of tree) {
-            path.push(data.id)
+            path.push(data[this.option.id])
             let has = func(data);
             (has || (containChild && hasP)) && result.push([...path])
             data.children && this.treeFindPath(data.children, func, path, result, containChild, (has || (containChild && hasP)))
@@ -273,7 +277,6 @@ class xnTree {
                     el.dir = dir;
                     el.y = y;
                     el.x = x;
-                    console.log(el);
                     if (el.dir == 'on') {
                         el.$onDom.addClass('xn-onmoving')
                         this.movedom.style.display = 'none'
@@ -298,7 +301,7 @@ class xnTree {
         this.container.addEventListener('scroll', e => {
             let y = (this.container.scrollTop);
             this.topIndex = Math.floor(y / this.option.lineHeight);
-            this.bottomIndex = this.topIndex + this.totalNum;
+            this.bottomIndex = this.topIndex + this.totalNum+4;
             this.refreshDom(true);
             this.container.querySelector(".xntree-cont").style.transform = 'translateY(' + (this.topIndex * this.option.lineHeight) + 'px)'
         })
@@ -381,7 +384,6 @@ class xnTree {
     }
 
     getMovePos($dom, e) {
-        console.log($dom);
         let dir = ''
         let pos = $dom.get(0).getBoundingClientRect();
         let top = pos.top, top1 = top + pos.height / 4, top2 = top + pos.height * 3 / 4,
@@ -423,19 +425,17 @@ class xnTree {
 
     radioEvent($t) {
         let p = $t.parents(".xntree-item").get(0)
-        let plevel = parseInt(p.getAttribute('data-level'))
         let id = p.getAttribute('data-id')
         let node = this.getNodeById(id)
         this.checked.keys = [id];
         this.checked.nodes = {};
         this.checked.nodes[id] = this.getNodeById(id)
         this.refreshDom();
-        this.trigger('checkChange', this.checked)
+        this.trigger('checkChange',node,true, this.checked)
     }
 
     checkEvent($t) {
         let p = $t.parents(".xntree-item").get(0)
-        let plevel = parseInt(p.getAttribute('data-level'))
         let id = p.getAttribute('data-id')
         let node = this.getNodeById(id)
         if (this.option.checkDisabled(node)) {
@@ -472,7 +472,7 @@ class xnTree {
             }
         }
         this.refreshDom();
-        this.trigger('checkChange', this.checked)
+        this.trigger('checkChange',node,!checked, this.checked)
     }
 
     delArrayFromArray(fromArray, delArray) {
@@ -497,13 +497,15 @@ class xnTree {
             this.checked.nodes[id] = (node)
         }
         this.checked.keys = keys;
-        this.trigger('checkChange', this.checked)
-        this.rendDom();
+        this.trigger('checkChange',false,false, this.checked,true)
+        this.refreshDom();
     }
 
     trigger(type, data) {
+        var args =[].slice.call(arguments);
+        args.splice(0,1)
         if (this.option.on[type]) {
-            this.option.on[type](data)
+            this.option.on[type](...args)
         }
     }
 
@@ -529,6 +531,7 @@ class xnTree {
             })
         }
         this.setCheckedKeys(list)
+
     }
 
     clearAll() {
@@ -689,6 +692,13 @@ class xnTree {
         }
         this.option = $.extend(true, {}, this.option, option)
         // this.refreshDom()
+    }
+    replaceKey (text, keyword){
+        if (!keyword || keyword.trim() == '') {
+            return text;
+        }
+        text = text.replace(new RegExp('(' + keyword + ')', 'ig'), '<span class="xn-searchedkey">$1</span>')
+        return text;
     }
 }
 
