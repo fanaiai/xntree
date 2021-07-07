@@ -19,35 +19,40 @@
     /*padding-left:40px;*/
     position: relative;
     align-items: center;
+    height: 32px;
 }
 .xntree-item.on{
-    background: #30a8fd;
+    background: #4874E5;
     color: #fff;
 }
-.xntree-item.on{
 
+.xntree-item.on .xn-tree-icons a{
+    color: #fff;
 }
 .xn-slidedown,.xn-folder{
     /*position: absolute;*/
     width:15px;
     left:0;
+    overflow: hidden;
 }
-.xn-slidedown:not(.down){
-    transform:rotateZ(-90deg);
+.xn-slidedown:not(.down):before{
+    transform: rotateZ(-90deg);
+    position: absolute;
 }
 .xn-folder{
     left:15px;
 }
 .xn-tree-icons{
-    width: 30px;
-    flex: 0 0 30px;
+    /*width: 30px;*/
+    /*flex: 0 0 30px;*/
     display: flex;
     color: #666;
     justify-content: space-between;
+    height: 100%;
 }
 .xn-tree-icons a{
     flex: 1;
-    width: 50%;
+    width: 15px;
 }
 .xn-indent{
     display: inline-block;
@@ -61,15 +66,27 @@
     margin:0 4px;
     flex: 0 0 12px;
     cursor: pointer;
+    position: relative;
 }
 .xn-radio{
     border-radius: 50%;
 }
 .xn-checkbox.on,.xn-radio.on{
-    background:#4a9bfe;
+    background:#2459E0;
+    border-color: #2459E0;
 }
 .xn-checkbox.disable,.xn-radio.disable{
-    background:#ccc;
+    background:#efefef;
+}
+.xn-checkbox.on:before,.xn-radio.on:before{
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    font-size: 12px;
+    line-height: 11px;
 }
 .xn-hide,.xn-hide-sub{
     display: none;

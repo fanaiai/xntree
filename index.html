@@ -84,7 +84,7 @@
 </div>
 
 <div class="xn-tree-container">
-    <h3>自定义显示内容</h3>
+    <h3>自定义显示内容，不显示默认图标</h3>
     <div class="btns">
     </div>
     <!--    <input id="keyword" autocomplete="off" placeholder="请输入关键词回车搜索,搜索结果包含子节点">-->
@@ -158,15 +158,6 @@
             on: '',//p,自动勾选父，c自动勾选子，function
             off: 'pc'
         },
-        editNode: function (d) {
-            return true
-        },
-        deleteNode: function (d) {
-            return true;
-        },
-        addChildNode: function (d) {
-            return true;
-        },
         on: {
             clickNode: ($t, nodedata, nodekey) => {
                 if ($t.hasClass('add-node')) {
@@ -231,15 +222,6 @@
             on: '',//p,自动勾选父，c自动勾选子，function
             off: 'pc'
         },
-        editNode: function (d) {
-            return true
-        },
-        deleteNode: function (d) {
-            return true;
-        },
-        addChildNode: function (d) {
-            return true;
-        },
         on: {
             clickNode: ($t, nodedata, nodekey) => {
                 if ($t.hasClass('add-node')) {
@@ -295,15 +277,6 @@
         checkSticky: {//check关联
             on: '',//p,自动勾选父，c自动勾选子，function
             off: 'pc'
-        },
-        editNode: function (d) {
-            return true
-        },
-        deleteNode: function (d) {
-            return true;
-        },
-        addChildNode: function (d) {
-            return true;
         },
         on: {
             clickNode: ($t, nodedata, nodekey) => {
@@ -362,15 +335,7 @@
             on: '',//p,自动勾选父，c自动勾选子，function
             off: 'pc'
         },
-        editNode: function (d) {
-            return true
-        },
-        deleteNode: function (d) {
-            return true;
-        },
-        addChildNode: function (d) {
-            return true;
-        },
+        hideIcon:true,//是否隐藏默认图标
         on: {
             clickNode: ($t, nodedata, nodekey) => {
                 if ($t.hasClass('add-node')) {

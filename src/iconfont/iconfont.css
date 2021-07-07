@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfontxntree"; /* Project id 2644529 */
-  src: url('iconfont.woff2?t=1625556504198') format('woff2'),
-       url('iconfont.woff?t=1625556504198') format('woff'),
-       url('iconfont.ttf?t=1625556504198') format('truetype');
+  src: url('iconfont.woff2?t=1625630084053') format('woff2'),
+       url('iconfont.woff?t=1625630084053') format('woff'),
+       url('iconfont.ttf?t=1625630084053') format('truetype');
 }
 
 .iconfontxntree {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-xntreecheckboxtick:before {
+  content: "\e64b";
 }
 
 .icon-xntreefile:before {

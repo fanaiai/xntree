@@ -33,38 +33,26 @@ class xnTree {
     constructor(container, data, option) {
         this.container = container;
         this.container.classList.add('xntree-outer')
-        this.data = data;
+        this.data = $.extend(true,[],data);
         this.topIndex = 0;
         this.bottomIndex = 30;
         this.flatList = {};
         this.flatListKeys = [];
         this.option = $.extend(true, {}, defaultOption, option);
         this.slidedownHTML = {
-            folder: `
-            <div class="xn-tree-icons">
-                <a class="xn-slidedown iconfontxntree icon-xntreezhankai1"></a>
-                <a class="xn-folder iconfontxntree icon-xntreewenjianjia"></a>
-            </div>
-            `,
-            folderdown: `
-            <div class="xn-tree-icons">
-                <a class="xn-slidedown down iconfontxntree icon-xntreezhankai1"></a>
-                <a class="xn-folder iconfontxntree icon-xntreewenjianjia"></a>
-            </div>
-            `,
-            file: `
-            <div class="xn-tree-icons">
-            <a></a>
-            <a class="xn-file iconfontxntree icon-xntreefile"></a>
-            </div>
-            `
+            'up':'<a class="xn-slidedown iconfontxntree icon-xntreezhankai1"></a>',
+            'down':'<a class="xn-slidedown down iconfontxntree icon-xntreezhankai1"></a>',
+        }
+        this.iconHTML={
+            folder:'<a class="xn-folder iconfontxntree icon-xntreewenjianjia"></a>',
+            file:'<a class="xn-file iconfontxntree icon-xntreefile"></a>'
         }
         this.selectHTML = {
             checkbox: `
         <div class="xn-checkbox"></div>
         `,
             checkboxon: `
-        <div class="xn-checkbox on"></div>
+        <div class="xn-checkbox on iconfontxntree icon-xntreecheckboxtick"></div>
         `,
             checkboxdisable: `
         <div class="xn-checkbox disable"></div>
@@ -73,7 +61,7 @@ class xnTree {
         <div class="xn-radio"></div>
         `,
             radioon: `
-        <div class="xn-radio on"></div>
+        <div class="xn-radio on iconfontxntree icon-xntreecheckboxtick"></div>
         `,
             radiodisable: `
         <div class="xn-radio disable"></div>
@@ -146,10 +134,18 @@ class xnTree {
 
 
     _rendOneNode(l, span, level, open) {
-        let icon = (l.children && l.children.length > 0) ? 'folder' : 'file'
-        if (l.$show && l.children && l.children[0] && l.children[0].$show) {
-            icon = 'folderdown'
+        let pre='<div class="xn-tree-icons">'
+        if (l.$show && l.children && l.children[0]) {
+            pre += this.slidedownHTML[l.children[0].$show?'down':'up']
         }
+        else{
+            pre+='<a></a>'
+        }
+        if(!this.option.hideIcon){
+            let icon = (l.children && l.children.length > 0) ? 'folder' : 'file'
+            pre+=this.iconHTML[icon]
+        }
+        pre+='</div>'
         l.$level = level;
         if (!span) {
             span = ''
@@ -184,7 +180,7 @@ class xnTree {
         }
         let h = `<div class="xntree-item ${!open ? 'xn-hide-sub' : ''} ${(this.clicked && this.clicked[this.option.id] == l.id) ? 'on' : ''}" data-level="${level}" data-id="${l[this.option.id]}">
                     ${span}
-                    ${this.slidedownHTML[icon]}   
+                    ${pre}   
                     ${selectDom}
                     <div class="xntree-label">${label}</div>
                     ${ope}

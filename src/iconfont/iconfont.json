@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "15413052",
+      "name": "checkbox tick",
+      "font_class": "checkboxtick",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
       "icon_id": "9924993",
       "name": "file",
       "font_class": "file",
