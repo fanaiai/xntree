@@ -489,7 +489,7 @@ class xnTree {
         return indexs;
     }
 
-    setCheckedKeys(keys,justRend) {
+    setCheckedKeys(keys) {
         this.checked.nodes = {};
         for (let i in keys) {
             let id = keys[i]
@@ -621,10 +621,6 @@ class xnTree {
             let k = delKeys[i];
             $(this.container).find("[data-id='" + k + "']").remove();
         }
-    }
-
-    refreshNode(node) {//更新某个节点
-
     }
 
     getFlatData() {
