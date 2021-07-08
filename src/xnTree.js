@@ -233,7 +233,7 @@ class xnTree {
     }
 
     addEvent() {
-        this.container.addEventListener('click', e => {
+        let clickFunc=(e)=>{
             let $t = $(e.target);
             if ($t.hasClass('xn-slidedown')) {
                 this.slideEvent($t);
@@ -251,12 +251,14 @@ class xnTree {
                 }
                 this.clickLabelEvent($item, $t, e);
             }
-        })
+        }
+        this.clickFunc=clickFunc;
+        this.container.addEventListener('click', clickFunc)
 
         let down = false;
         let move = false;
         let el = {};
-        this.container.addEventListener("mousedown", e => {
+        let mousedownFunc=e=>{
             let $t = $(e.target);
             if ($t.parents('.xntree-item').get(0)) {
                 down = true;
@@ -264,8 +266,11 @@ class xnTree {
                 el.id = el.$dom.attr("data-id")
                 el.startTime = new Date().getTime();
             }
-        })
-        document.addEventListener("mousemove", e => {
+        }
+        this.mousedownFunc=mousedownFunc;
+        this.container.addEventListener("mousedown", mousedownFunc)
+
+        let mousemoveFunc=e=>{
             if (!this.option.canMove) {
                 return;
             }
@@ -292,8 +297,11 @@ class xnTree {
                 }
                 move = true;
             }
-        })
-        document.addEventListener("mouseup", e => {
+        }
+        this.mousemoveFunc=mousemoveFunc;
+        document.addEventListener("mousemove", mousemoveFunc)
+
+        let mouseupFunc=e=>{
             if (down && move) {
                 this.moveItem(el);
             }
@@ -301,14 +309,19 @@ class xnTree {
             move = false;
             this.container.classList.remove("xn-moving")
             this.movedom.style.display = 'none'
-        })
-        this.container.addEventListener('scroll', e => {
+        }
+        this.mouseupFunc=mouseupFunc;
+        document.addEventListener("mouseup", mouseupFunc)
+
+        let scrollFunc=e=>{
             let y = (this.container.scrollTop);
             this.topIndex = Math.floor(y / this.option.lineHeight);
             this.bottomIndex = this.topIndex + this.totalNum+4;
             this.refreshDom(true);
             this.container.querySelector(".xntree-cont").style.transform = 'translateY(' + (this.topIndex * this.option.lineHeight) + 'px)'
-        })
+        }
+        this.scrollFunc=scrollFunc;
+        this.container.addEventListener('scroll', scrollFunc)
     }
 
     refreshDom(justScroll) {
@@ -632,7 +645,6 @@ class xnTree {
         if (!this.option.pId) {
             this.option.pId = '$pId'
         }
-        console.log(this.data);
     }
 
     _literalFlatTree(pNode, list, arry, arrykeys, level, dontSetData) {
@@ -699,6 +711,15 @@ class xnTree {
         }
         text = text.replace(new RegExp('(' + keyword + ')', 'ig'), '<span class="xn-searchedkey">$1</span>')
         return text;
+    }
+    destory(){
+        this.container.removeEventListener('click',this.clickFunc);
+        this.container.removeEventListener('mousedown',this.clickFunc);
+        document.removeEventListener('mousemove',this.clickFunc);
+        document.removeEventListener('mouseup',this.clickFunc);
+        this.container.removeEventListener('scroll',this.clickFunc);
+        this.data=null;
+        this.flatList=null;
     }
 }
 
