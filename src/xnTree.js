@@ -714,10 +714,10 @@ class xnTree {
     }
     destory(){
         this.container.removeEventListener('click',this.clickFunc);
-        this.container.removeEventListener('mousedown',this.clickFunc);
-        document.removeEventListener('mousemove',this.clickFunc);
-        document.removeEventListener('mouseup',this.clickFunc);
-        this.container.removeEventListener('scroll',this.clickFunc);
+        this.container.removeEventListener('mousedown',this.mousedownFunc);
+        document.removeEventListener('mousemove',this.mousemoveFunc);
+        document.removeEventListener('mouseup',this.mouseupFunc);
+        this.container.removeEventListener('scroll',this.scrollFunc);
         this.data=null;
         this.flatList=null;
     }
