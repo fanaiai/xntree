@@ -150,6 +150,8 @@
 + addNode(id,node):添加节点,id:添加到的父节点id，当添加根节点时id为null,node新节点数据
 + deleteNode(id):删除节点
 + getNodeById(id):获取某个节点数据
++ resize():重新计算容器高度
++ destory():销毁实例，主要用于清除绑定事件
 
 ## 示例代码请参考 index.html
 ## 后续功能点
