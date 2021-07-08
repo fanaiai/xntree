@@ -1,4 +1,4 @@
-# xntree
+# xntree 仙女座树插件
 树组件、原生js、jquery、tree、大数据量、虚拟树、vue
 
 # 2021/07/07 V1.0.0(已发布)
