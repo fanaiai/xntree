@@ -1,12 +1,8 @@
 {
   "name": "xntree",
   "version": "1.0.0",
-  "description": "仙女座虚拟树组件",
+  "description": "仙女座虚拟树插件",
   "dependencies": {
-    "@sunify/lerp-color": "^2.0.0",
-    "d3-geo": "^2.0.1",
-    "delaunator": "^4.0.1",
-    "point-in-polygon": "^1.0.1"
   },
   "devDependencies": {
     "@purtuga/esm-webpack-plugin": "^1.5.0",
@@ -43,12 +39,12 @@
     "url": "git+https://github.com/fanaiai/xnwebglglobal.git"
   },
   "keywords": [
-    "仙女座虚拟树组件"
+    "仙女座虚拟树插件"
   ],
   "author": "范媛媛 <516039800@qq.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/fanaiai/xnwebglglobal/issues"
+    "url": "https://github.com/fanaiai/xntree/issues"
   },
-  "homepage": "https://github.com/fanaiai/xnwebglglobal#readme"
+  "homepage": "https://github.com/fanaiai/xntree#readme"
 }
