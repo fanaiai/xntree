@@ -184,7 +184,7 @@ class xnTree {
                 selectDom = this.selectHTML[this.option.selectType + 'disable']
             }
         }
-        let h = `<div class="xntree-item ${!open ? 'xn-hide-sub' : ''} ${(this.clicked && this.clicked[this.option.id] == l[this.option.id]) ? 'on' : ''}" data-level="${level}" data-id="${l[this.option.id]}">
+        let h = `<div style="line-height: ${this.option.lineHeight}px;height:${this.option.lineHeight}px" class="xntree-item ${!open ? 'xn-hide-sub' : ''} ${(this.clicked && this.clicked[this.option.id] == l[this.option.id]) ? 'on' : ''}" data-level="${level}" data-id="${l[this.option.id]}">
                     ${span}
                     ${pre}   
                     ${selectDom}

@@ -57,7 +57,7 @@
 </head>
 <body>
 <div class="xn-tree-container">
-    <h3>完整功能</h3>
+    <h3>完整功能（设置容器最大高度500px）</h3>
     <div class="btns">
         <a id="checkAll">全选</a>
         <a id="checkAllSearch">全选(仅搜索结果项)</a>
@@ -68,11 +68,11 @@
     <div class="tree" id="tree"></div>
 </div>
 <div class="xn-tree-container">
-    <h3>单选框-显示内容为text字段</h3>
+    <h3>单选框-显示内容为text字段（设置容器固定高度300）</h3>
     <div class="btns">
     </div>
 <!--    <input id="keyword" autocomplete="off" placeholder="请输入关键词回车搜索,搜索结果包含子节点">-->
-    <div class="tree" id="tree1"></div>
+    <div class="tree" id="tree1" style="height: 300px;"></div>
 </div>
 
 <div class="xn-tree-container">
@@ -139,6 +139,7 @@
         },
         id: 'id',
         pId: false,
+        lineHeight:28,
         selectType: 'checkbox',//radio,null,checkbox
         canMove: true,
         checkDisabled: function (d) {
