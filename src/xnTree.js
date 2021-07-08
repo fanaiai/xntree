@@ -78,6 +78,10 @@ class xnTree {
         this.getFlatData();
         this.init();
     }
+    resize(){
+        this.totalNum=parseInt((this.container.clientHeight||document.body.clientHeight)/this.option.lineHeight);
+        this.refreshDom()
+    }
 
     init() {
         // console.log(this.data);

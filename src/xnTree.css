@@ -60,13 +60,14 @@
     flex: 0 0 15px;
 }
 .xntree-outer .xn-checkbox,.xntree-outer .xn-radio{
-    width:12px;
-    height: 12px;
+    width:14px;
+    height: 14px;
     border:1px solid #ccc;
     margin:0 4px;
-    flex: 0 0 12px;
+    flex: 0 0 14px;
     cursor: pointer;
     position: relative;
+    box-sizing: border-box;
 }
 .xntree-outer .xn-radio{
     border-radius: 50%;
