@@ -508,9 +508,13 @@ class xnTree {
 
     setCheckedKeys(keys) {
         this.checked.nodes = {};
-        for (let i in keys) {
+        for (let i=keys.length-1;i>=0;i--) {
             let id = keys[i]
             let node = this.getNodeById(id)
+            if(!node){//用于处理设置的key值不存在的情况
+                keys.splice(i,1)
+                continue;
+            }
             this.checked.nodes[id] = (node)
         }
         this.checked.keys = keys;
