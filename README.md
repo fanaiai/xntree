@@ -145,12 +145,13 @@
 + checkAll(justResult):选中全部,justResult为true则仅选择当前搜索结果
 + clearAll():清空所选项
 + setCheckedKeys(keys):设置选中节点，keys为选中的节点id的数组
-+ setCheckedNodes(nodes):设置选中节点，keys为选中节点列表
++ setCheckedNodes(nodes):设置选中节点，nodes为选中节点的数组
 + editNode(node):编辑节点
 + addNode(id,node):添加节点,id:添加到的父节点id，当添加根节点时id为null,node新节点数据
 + deleteNode(id):删除节点
 + getNodeById(id):获取某个节点数据
 + resize():重新计算容器高度
++ refreshDom():重新绘制
 + destory():销毁实例，主要用于清除绑定事件
 
 ## 示例代码请参考 index.html
