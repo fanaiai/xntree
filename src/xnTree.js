@@ -234,6 +234,7 @@ class xnTree {
 
     addEvent() {
         let clickFunc=(e)=>{
+            e.stopPropagation();
             let $t = $(e.target);
             if ($t.hasClass('xn-slidedown')) {
                 this.slideEvent($t);
