@@ -7,7 +7,8 @@ let $ = window.XNQuery;
 let defaultOption = {
     label: 'text',
     id: 'id',
-    lineHeight:32,
+    lineHeight: 32,
+    dataType: 'tree',
     // pId: 'parentid',
     selectType: 'checkbox',//radio,null
     checkDisabled: function (d) {
@@ -35,20 +36,25 @@ class xnTree {
     constructor(container, data, option) {
         this.container = container;
         this.container.classList.add('xntree-outer')
-        this.data = $.extend(true,[],data);
+        this.option = $.extend(true, {}, defaultOption, option);
+        if (option.dataType == 'list') {
+            this.data = this.revertListToTree(data);
+        } else {
+            this.data = $.extend(true, [], data);
+        }
         this.flatList = {};
         this.flatListKeys = [];
-        this.option = $.extend(true, {}, defaultOption, option);
-        this.totalNum=parseInt((this.container.clientHeight||document.body.clientHeight)/this.option.lineHeight);
+
+        this.totalNum = parseInt((this.container.clientHeight || document.body.clientHeight) / this.option.lineHeight);
         this.topIndex = 0;
-        this.bottomIndex = this.totalNum+4;
+        this.bottomIndex = this.totalNum + 4;
         this.slidedownHTML = {
-            'up':'<a class="xn-slidedown iconfontxntree icon-xntreezhankai1"></a>',
-            'down':'<a class="xn-slidedown down iconfontxntree icon-xntreezhankai1"></a>',
+            'up': '<a class="xn-slidedown iconfontxntree icon-xntreezhankai1"></a>',
+            'down': '<a class="xn-slidedown down iconfontxntree icon-xntreezhankai1"></a>',
         }
-        this.iconHTML={
-            folder:'<a class="xn-folder iconfontxntree icon-xntreewenjianjia"></a>',
-            file:'<a class="xn-file iconfontxntree icon-xntreefile"></a>'
+        this.iconHTML = {
+            folder: '<a class="xn-folder iconfontxntree icon-xntreewenjianjia"></a>',
+            file: '<a class="xn-file iconfontxntree icon-xntreefile"></a>'
         }
         this.selectHTML = {
             checkbox: `
@@ -78,8 +84,9 @@ class xnTree {
         this.getFlatData();
         this.init();
     }
-    resize(){
-        this.totalNum=parseInt((this.container.clientHeight||document.body.clientHeight)/this.option.lineHeight);
+
+    resize() {
+        this.totalNum = parseInt((this.container.clientHeight || document.body.clientHeight) / this.option.lineHeight);
         this.refreshDom()
     }
 
@@ -141,18 +148,17 @@ class xnTree {
 
 
     _rendOneNode(l, span, level, open) {
-        let pre='<div class="xn-tree-icons">'
+        let pre = '<div class="xn-tree-icons">'
         if (l.$show && l.children && l.children[0]) {
-            pre += this.slidedownHTML[l.children[0].$show?'down':'up']
+            pre += this.slidedownHTML[l.children[0].$show ? 'down' : 'up']
+        } else {
+            pre += '<a></a>'
         }
-        else{
-            pre+='<a></a>'
-        }
-        if(!this.option.hideIcon){
+        if (!this.option.hideIcon) {
             let icon = (l.children && l.children.length > 0) ? 'folder' : 'file'
-            pre+=this.iconHTML[icon]
+            pre += this.iconHTML[icon]
         }
-        pre+='</div>'
+        pre += '</div>'
         l.$level = level;
         if (!span) {
             span = ''
@@ -163,11 +169,11 @@ class xnTree {
         let label = '';
         if (typeof this.option.label == 'string') {
             label = l[this.option.label]
-            if(this.searchKeyword){
-                label=this.replaceKey(label,this.searchKeyword)
+            if (this.searchKeyword) {
+                label = this.replaceKey(label, this.searchKeyword)
             }
         } else if (typeof this.option.label == 'function') {
-            label = this.option.label(l,this,this.searchKeyword)
+            label = this.option.label(l, this, this.searchKeyword)
         }
 
         let ope = `<div class="xntree-ope">`
@@ -203,7 +209,7 @@ class xnTree {
     search(keyword, func, containChild) {
         let that = this;
         this.seachKeys = null;
-        this.searchKeyword=keyword;
+        this.searchKeyword = keyword;
         if (keyword.trim()) {
             if (!func) {
                 func = (d) => {
@@ -233,7 +239,7 @@ class xnTree {
     }
 
     addEvent() {
-        let clickFunc=(e)=>{
+        let clickFunc = (e) => {
             e.stopPropagation();
             let $t = $(e.target);
             if ($t.hasClass('xn-slidedown')) {
@@ -253,13 +259,13 @@ class xnTree {
                 this.clickLabelEvent($item, $t, e);
             }
         }
-        this.clickFunc=clickFunc;
+        this.clickFunc = clickFunc;
         this.container.addEventListener('click', clickFunc)
 
         let down = false;
         let move = false;
         let el = {};
-        let mousedownFunc=e=>{
+        let mousedownFunc = e => {
             let $t = $(e.target);
             if ($t.parents('.xntree-item').get(0)) {
                 down = true;
@@ -268,10 +274,10 @@ class xnTree {
                 el.startTime = new Date().getTime();
             }
         }
-        this.mousedownFunc=mousedownFunc;
+        this.mousedownFunc = mousedownFunc;
         this.container.addEventListener("mousedown", mousedownFunc)
 
-        let mousemoveFunc=e=>{
+        let mousemoveFunc = e => {
             if (!this.option.canMove) {
                 return;
             }
@@ -299,10 +305,10 @@ class xnTree {
                 move = true;
             }
         }
-        this.mousemoveFunc=mousemoveFunc;
+        this.mousemoveFunc = mousemoveFunc;
         document.addEventListener("mousemove", mousemoveFunc)
 
-        let mouseupFunc=e=>{
+        let mouseupFunc = e => {
             if (down && move) {
                 this.moveItem(el);
             }
@@ -311,17 +317,17 @@ class xnTree {
             this.container.classList.remove("xn-moving")
             this.movedom.style.display = 'none'
         }
-        this.mouseupFunc=mouseupFunc;
+        this.mouseupFunc = mouseupFunc;
         document.addEventListener("mouseup", mouseupFunc)
 
-        let scrollFunc=e=>{
+        let scrollFunc = e => {
             let y = (this.container.scrollTop);
             this.topIndex = Math.floor(y / this.option.lineHeight);
-            this.bottomIndex = this.topIndex + this.totalNum+4;
+            this.bottomIndex = this.topIndex + this.totalNum + 4;
             this.refreshDom(true);
             this.container.querySelector(".xntree-cont").style.transform = 'translateY(' + (this.topIndex * this.option.lineHeight) + 'px)'
         }
-        this.scrollFunc=scrollFunc;
+        this.scrollFunc = scrollFunc;
         this.container.addEventListener('scroll', scrollFunc)
     }
 
@@ -449,7 +455,7 @@ class xnTree {
         this.checked.nodes = {};
         this.checked.nodes[id] = this.getNodeById(id)
         this.refreshDom();
-        this.trigger('checkChange',node,true, this.checked)
+        this.trigger('checkChange', node, true, this.checked)
     }
 
     checkEvent($t) {
@@ -490,7 +496,7 @@ class xnTree {
             }
         }
         this.refreshDom();
-        this.trigger('checkChange',node,!checked, this.checked)
+        this.trigger('checkChange', node, !checked, this.checked)
     }
 
     delArrayFromArray(fromArray, delArray) {
@@ -509,23 +515,23 @@ class xnTree {
 
     setCheckedKeys(keys) {
         this.checked.nodes = {};
-        for (let i=keys.length-1;i>=0;i--) {
+        for (let i = keys.length - 1; i >= 0; i--) {
             let id = keys[i]
             let node = this.getNodeById(id)
-            if(!node){//用于处理设置的key值不存在的情况
-                keys.splice(i,1)
+            if (!node) {//用于处理设置的key值不存在的情况
+                keys.splice(i, 1)
                 continue;
             }
             this.checked.nodes[id] = (node)
         }
         this.checked.keys = keys;
-        this.trigger('checkChange',false,false, this.checked,true)
+        this.trigger('checkChange', false, false, this.checked, true)
         this.refreshDom();
     }
 
     trigger(type, data) {
-        var args =[].slice.call(arguments);
-        args.splice(0,1)
+        var args = [].slice.call(arguments);
+        args.splice(0, 1)
         if (this.option.on[type]) {
             this.option.on[type](...args)
         }
@@ -646,13 +652,14 @@ class xnTree {
     }
 
     getFlatData() {
-        this._literalFlatTree({}, this.data, this.flatList, this.flatListKeys, 0)
+        let list = [];
+        this._literalFlatTree({}, this.data, this.flatList, this.flatListKeys, 0, false, list)
         if (!this.option.pId) {
             this.option.pId = '$pId'
         }
     }
 
-    _literalFlatTree(pNode, list, arry, arrykeys, level, dontSetData) {
+    _literalFlatTree(pNode, list, arry, arrykeys, level, dontSetData, list1) {
         for (let i = 0; i < list.length; i++) {
             let l = list[i];
             if (!dontSetData) {
@@ -662,10 +669,11 @@ class xnTree {
                     l.$pId = pNode[this.option.id];
                 }
             }
+            list1.push(l)
             arry[l[this.option.id]] = l
             arrykeys.push(l[this.option.id])
             if (l.children && l.children.length > 0) {
-                this._literalFlatTree(l, l.children, arry, arrykeys, level + 1, dontSetData)
+                this._literalFlatTree(l, l.children, arry, arrykeys, level + 1, dontSetData, list1)
             }
         }
     }
@@ -710,21 +718,42 @@ class xnTree {
         this.option = $.extend(true, {}, this.option, option)
         // this.refreshDom()
     }
-    replaceKey (text, keyword){
+
+    replaceKey(text, keyword) {
         if (!keyword || keyword.trim() == '') {
             return text;
         }
         text = text.replace(new RegExp('(' + keyword + ')', 'ig'), '<span class="xn-searchedkey">$1</span>')
         return text;
     }
-    destory(){
-        this.container.removeEventListener('click',this.clickFunc);
-        this.container.removeEventListener('mousedown',this.mousedownFunc);
-        document.removeEventListener('mousemove',this.mousemoveFunc);
-        document.removeEventListener('mouseup',this.mouseupFunc);
-        this.container.removeEventListener('scroll',this.scrollFunc);
-        this.data=null;
-        this.flatList=null;
+
+    destory() {
+        this.container.removeEventListener('click', this.clickFunc);
+        this.container.removeEventListener('mousedown', this.mousedownFunc);
+        document.removeEventListener('mousemove', this.mousemoveFunc);
+        document.removeEventListener('mouseup', this.mouseupFunc);
+        this.container.removeEventListener('scroll', this.scrollFunc);
+        this.data = null;
+        this.flatList = null;
+    }
+    revertListToTree(data){
+        let datajson={};
+        let d=$.extend(true,[],data);
+        for(let i=0;i<d.length;i++){
+            if(!d[i].children){
+                d[i].children=[];
+            }
+            datajson[d[i][this.option.id]]=d[i];
+
+        }
+        let nd= d.filter(item=>{
+            if(datajson[item[this.option.pId]] && item[this.option.pId]!=item[this.option.id]){
+                datajson[item[this.option.pId]].children.push(item)
+                return false;
+            }
+            return true;
+        })
+        return nd;
     }
 }
 

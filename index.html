@@ -68,6 +68,10 @@
     <div class="tree" id="tree"></div>
 </div>
 <div class="xn-tree-container">
+    <h3>数据格式为list类型（list/tree）</h3>
+    <div class="tree" id="listtree"></div>
+</div>
+<div class="xn-tree-container">
     <h3>单选框-显示内容为text字段（设置容器固定高度300）</h3>
     <div class="btns">
     </div>
@@ -94,7 +98,70 @@
 </body>
 <script type="module">
     // import xnTree from './src/xnTree.js'
-    import {data, data1, data2,bigdata} from './static/data.js'
+    import {data, data1, data2,bigdata,listdata} from './static/data.js'
+
+    let optionlist = {
+        label: (d,ins) => {
+            let t=ins.replaceKey(d.text, document.querySelector('#keyword').value)
+            let dom = `
+                        <div style="display: flex;justify-content: space-between">
+                        <div>
+                            <span>${d.id}</span>
+                            <span>
+                                ${t}
+                            </span>
+                        </div>
+                        <div class="xntree-ope">
+                            <a class="delete-node">删除</a>
+                            <a class="add-node">新增</a>
+                            <a class="edit-node">编辑</a>
+                        </div>
+                        </div>
+                        `
+            return dom;
+        },
+        id: 'id',
+        pId: 'parentid',
+        lineHeight:28,
+        dataType:'list',
+        selectType: 'checkbox',//radio,null,checkbox
+        canMove: true,
+        checkDisabled: function (d) {
+        },
+        autoOpen: function (d, level) {
+            return level <= 0;
+        },
+        checkSticky: {//check关联
+            on: '',//p,自动勾选父，c自动勾选子，function
+            off: 'pc'
+        },
+        on: {
+            clickNode: ($t, nodedata, nodekey) => {
+                if ($t.hasClass('add-node')) {
+                    addNode(nodekey,'新节点')
+                    return false;
+                }
+                if ($t.hasClass('delete-node')) {
+                    deleteNode(nodekey)
+                    return false;
+                }
+                if ($t.hasClass('edit-node')) {
+                    editNode(nodekey,'新名称')
+                    return false;
+                }
+                console.log(nodedata);
+                return true;//true则设置该节点为当前点击元素，false反之
+            },
+            checkChange: (checkedData) => {
+                console.log(checkedData);
+            },
+            moveChange: (movedNode, currentData) => {
+                console.log(currentData);
+            }
+        }
+    }
+    let xntreelist = new xnTree(document.querySelector('#listtree'), listdata, optionlist)
+
     let newId=1;
     let addNode=(nodeId,name)=>{
         newId++;
