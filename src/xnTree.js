@@ -114,10 +114,12 @@ class xnTree {
         this.scrollDom = this.container.querySelector('.xntree-scroll')
         this.setScrollWidth();
     }
-    setScrollWidth(){
-        let width=this.container.querySelector(".xntree-cont").clientWidth;
-        this.scrollDom.style.minWidth=width+'px'
+
+    setScrollWidth() {
+        let width = this.container.querySelector(".xntree-cont").clientWidth;
+        this.scrollDom.style.minWidth = width + 'px'
     }
+
     _rendHTML(list, level, justScroll) {
         let dom = '';
         let span = '';
@@ -435,6 +437,32 @@ class xnTree {
         return [dir, x, y];
     }
 
+    setNodesShow(node) {
+        if(!node){
+            return;
+        }
+        let pId = node[this.option.pId];
+        let pNode = this.flatList[pId];
+        if (!node.$show) {
+            node.$show = true;
+            if(pNode){
+            for (let i = 0; i < pNode.children.length; i++) {
+                pNode.children[i].$show = true;
+            }
+            }
+        }
+        this.setNodesShow(pNode)
+    }
+
+    setSelectKey(key, triggerClick) {
+        this.clicked = this.getNodeById(key);
+        this.setNodesShow(this.clicked);
+        this.refreshDom()
+        if (triggerClick) {
+            this.trigger('clickNode', this.container.querySelector('.xntree-item[data-id="' + key + '"]'), this.clicked, key)
+        }
+    }
+
     clickLabelEvent($item, $t, e) {
         let p = $item.parents(".xntree-item").get(0)
         let plevel = parseInt(p.getAttribute('data-level'))
@@ -741,18 +769,19 @@ class xnTree {
         this.data = null;
         this.flatList = null;
     }
-    revertListToTree(data){
-        let datajson={};
-        let d=$.extend(true,[],data);
-        for(let i=0;i<d.length;i++){
-            if(!d[i].children){
-                d[i].children=[];
+
+    revertListToTree(data) {
+        let datajson = {};
+        let d = $.extend(true, [], data);
+        for (let i = 0; i < d.length; i++) {
+            if (!d[i].children) {
+                d[i].children = [];
             }
-            datajson[d[i][this.option.id]]=d[i];
+            datajson[d[i][this.option.id]] = d[i];
 
         }
-        let nd= d.filter(item=>{
-            if(datajson[item[this.option.pId]] && item[this.option.pId]!=item[this.option.id]){
+        let nd = d.filter(item => {
+            if (datajson[item[this.option.pId]] && item[this.option.pId] != item[this.option.id]) {
                 datajson[item[this.option.pId]].children.push(item)
                 return false;
             }
