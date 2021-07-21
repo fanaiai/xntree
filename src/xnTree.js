@@ -112,8 +112,12 @@ class xnTree {
         this.container.innerHTML = scrollDom + this.dom + movedom;
         this.movedom = this.container.querySelector('.xntree-move')
         this.scrollDom = this.container.querySelector('.xntree-scroll')
+        this.setScrollWidth();
     }
-
+    setScrollWidth(){
+        let width=this.container.querySelector(".xntree-cont").clientWidth;
+        this.scrollDom.style.minWidth=width+'px'
+    }
     _rendHTML(list, level, justScroll) {
         let dom = '';
         let span = '';
@@ -339,6 +343,7 @@ class xnTree {
         if (!justScroll) {
             this.scrollDom.style.height = this.openNumber * this.option.lineHeight + 'px'
         }
+        this.setScrollWidth();
     }
 
     moveItem(el) {
