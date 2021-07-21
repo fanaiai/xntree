@@ -21,6 +21,7 @@
 # 2021/07/21 V1.0.1(已发布)
 + 增加方法：setSelectKey(key)，设置当前选中节点
 + 增加监听属性：dblclickNode，监听双击事件
++ 增加属性：disableMoveNode(movingNode,onNode,movingDir)，判断该节点是否可以移动
 # 2021/07/07 V1.0.1(已发布)
 + 增加对list类型原始数据的支持，option增加dataType属性(list/tree)
 # 2021/07/07 V1.0.0(已发布)
