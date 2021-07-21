@@ -182,17 +182,17 @@ class xnTree {
             label = this.option.label(l, this, this.searchKeyword)
         }
 
-        let ope = `<div class="xntree-ope">`
-        if (this.option.addChildNode(l)) {
-            ope += `<a class="xntree-add"></a>`
-        }
-        if (this.option.editNode(l)) {
-            ope += `<a class="xntree-edit"></a>`
-        }
-        if (this.option.deleteNode(l)) {
-            ope += `<a class="xntree-delete"></a>`
-        }
-        ope += `</div>`
+        // let ope = `<div class="xntree-ope">`
+        // if (this.option.addChildNode(l)) {
+        //     ope += `<a class="xntree-add"></a>`
+        // }
+        // if (this.option.editNode(l)) {
+        //     ope += `<a class="xntree-edit"></a>`
+        // }
+        // if (this.option.deleteNode(l)) {
+        //     ope += `<a class="xntree-delete"></a>`
+        // }
+        // ope += `</div>`
         let selectDom = '';
         if (this.option.selectType) {
             selectDom = this.selectHTML[this.option.selectType + (((this.checked.nodes[l[this.option.id]]) || this.checked.nodes[l[this.option.id]]) ? 'on' : '')] || ''
@@ -205,7 +205,6 @@ class xnTree {
                     ${pre}   
                     ${selectDom}
                     <div class="xntree-label">${label}</div>
-                    ${ope}
                     </div>`
         let dom = document.createElement('div');
         dom.innerHTML = h;
@@ -245,8 +244,10 @@ class xnTree {
     }
 
     addEvent() {
+        let startTime=new Date().getTime();
         let clickFunc = (e) => {
             e.stopPropagation();
+
             let $t = $(e.target);
             if ($t.hasClass('xn-slidedown')) {
                 this.slideEvent($t);
@@ -264,9 +265,45 @@ class xnTree {
                 }
                 this.clickLabelEvent($item, $t, e);
             }
+            if(new Date().getTime()-startTime<300){
+                dblclickFunc(e)
+            }
+            startTime=new Date().getTime();
+        }
+        let dblclickFunc = (e) => {
+            // e.stopPropagation();
+            let $t = $(e.target);
+            if ($t.hasClass('xntree-label') || $t.parents('.xntree-label').get(0)) {
+                let $item = $t;
+                if ($t.parents('.xntree-label').get(0)) {
+                    $item = $t.parents('.xntree-label').eq(0)
+                }
+                let p = $item.parents(".xntree-item").get(0)
+                let id = p.getAttribute('data-id')
+                let node = this.getNodeById(id)
+                if (this.option.on && this.option.on.dblclickNode) {
+                    this.option.on.dblclickNode($t, node, id, e)
+                }
+            }
         }
         this.clickFunc = clickFunc;
         this.container.addEventListener('click', clickFunc)
+
+        this.mouseoverFunc=e=>{
+            let $t = $(e.target);
+            if ($t.hasClass('xntree-item') || $t.parents('.xntree-item').get(0)) {
+                let $item = $t;
+                if ($t.parents('.xntree-item').get(0)) {
+                    $item = $t.parents('.xntree-item').eq(0)
+                }
+                let id = $item.get(0).getAttribute('data-id')
+                let node = this.getNodeById(id)
+                if(this.option.on.hoverNode){
+                    this.option.on.hoverNode(node, $t, e)
+                }
+            }
+        }
+        this.container.addEventListener('mouseover', this.mouseoverFunc)
 
         let down = false;
         let move = false;
@@ -352,6 +389,16 @@ class xnTree {
         if (el.id == el.onId) {
             return;
         }
+        if(this.option.disableMoveNode==true ){
+            return;
+        }
+
+        if(typeof this.option.disableMoveNode=='function'){
+            let dontMove=this.option.disableMoveNode(this.getNodeById(el.id),this.getNodeById(el.onId),el.dir)
+            if(dontMove){
+                return;
+            }
+        }
         let curP = this.flatList[this.flatList[el.id][this.option.pId]];
         if (!curP) {
             curP = {
@@ -368,7 +415,7 @@ class xnTree {
             this.flatList[el.onId].children = [];
             hasChild = false;
         }
-        if (el.dir == 'on' || (hasChild && el.dir == 'down' && this.flatList[el.onId].children[0].$show)) {//1.在节点上，2.当节点为展开状态，鼠标在节点下方，统一做在节点上的操作
+        if (el.dir == 'on' || (hasChild && el.dir == 'down' && this.flatList[el.onId].children[0] && this.flatList[el.onId].children[0].$show)) {//1.在节点上，2.当节点为展开状态，鼠标在节点下方，统一做在节点上的操作
             this.flatList[el.id][this.option.pId] = el.onId;
             this.flatList[el.onId].children.unshift(this.flatList[el.id])
             this.flatList[el.id].$show = this.flatList[el.onId].children[1] && this.flatList[el.onId].children[1].$show;
@@ -446,9 +493,9 @@ class xnTree {
         if (!node.$show) {
             node.$show = true;
             if(pNode){
-            for (let i = 0; i < pNode.children.length; i++) {
-                pNode.children[i].$show = true;
-            }
+                for (let i = 0; i < pNode.children.length; i++) {
+                    pNode.children[i].$show = true;
+                }
             }
         }
         this.setNodesShow(pNode)
@@ -762,7 +809,9 @@ class xnTree {
 
     destory() {
         this.container.removeEventListener('click', this.clickFunc);
+        this.container.removeEventListener('dblclick', this.dblclickFunc);
         this.container.removeEventListener('mousedown', this.mousedownFunc);
+        this.container.removeEventListener('mouseover', this.mouseoverFunc);
         document.removeEventListener('mousemove', this.mousemoveFunc);
         document.removeEventListener('mouseup', this.mouseupFunc);
         this.container.removeEventListener('scroll', this.scrollFunc);
@@ -788,6 +837,23 @@ class xnTree {
             return true;
         })
         return nd;
+    }
+
+    revertTreeToList(treedata){
+        let list=[];
+        this._revertTreeToListFunc(treedata,list);
+        return list;
+    }
+
+    _revertTreeToListFunc(treedata,list){
+        for(let i=0;i<treedata.length;i++){
+            let item=$.extend(true,{},treedata[i]);
+            delete item.children;
+            list.push(item);
+            if(treedata[i].children){
+                this._revertTreeToListFunc(treedata[i].children,list);
+            }
+        }
     }
 }
 
