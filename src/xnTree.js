@@ -83,11 +83,17 @@ class xnTree {
         this.clicked = null;
         this.getFlatData();
         this.init();
+        this.addResizeObserve()
+
     }
 
-    resize() {
-        this.totalNum = parseInt((this.container.clientHeight || document.body.clientHeight) / this.option.lineHeight);
-        this.refreshDom()
+    addResizeObserve() {
+        this.resizeObserver = new ResizeObserver(entries => {
+            this.totalNum = parseInt((this.container.clientHeight || document.body.clientHeight) / this.option.lineHeight);
+            this.refreshDom(true)
+        });
+        this.resizeObserver.observe(this.container)
+
     }
 
     init() {
@@ -133,7 +139,13 @@ class xnTree {
                     continue
                 } else {
                     this.index++;
-                    this.openNumber++
+                    this.openNumber++;
+                    if (this.clicked && this.clicked[this.option.id] == l.id) {
+                        this.calcCurrent = false;
+                    }
+                    if (this.calcCurrent) {
+                        this.currentNumber++;
+                    }
                 }
             }
             if (this.index - 1 >= this.topIndex && this.index <= this.bottomIndex) {
@@ -244,31 +256,36 @@ class xnTree {
     }
 
     addEvent() {
-        let startTime=new Date().getTime();
+        let startTime = new Date().getTime();
         let clickFunc = (e) => {
-            e.stopPropagation();
+
 
             let $t = $(e.target);
             if ($t.hasClass('xn-slidedown')) {
+                e.stopPropagation();
                 this.slideEvent($t);
             }
             if ($t.hasClass('xn-checkbox')) {
+                e.stopPropagation();
                 this.checkEvent($t);
             }
             if ($t.hasClass('xn-radio')) {
+                e.stopPropagation();
                 this.radioEvent($t);
             }
             if ($t.hasClass('xntree-label') || $t.parents('.xntree-label').get(0)) {
+                e.stopPropagation();
                 let $item = $t;
                 if ($t.parents('.xntree-label').get(0)) {
                     $item = $t.parents('.xntree-label').eq(0)
                 }
                 this.clickLabelEvent($item, $t, e);
             }
-            if(new Date().getTime()-startTime<300){
+            if (new Date().getTime() - startTime < 300) {
+                e.stopPropagation();
                 dblclickFunc(e)
             }
-            startTime=new Date().getTime();
+            startTime = new Date().getTime();
         }
         let dblclickFunc = (e) => {
             // e.stopPropagation();
@@ -289,7 +306,7 @@ class xnTree {
         this.clickFunc = clickFunc;
         this.container.addEventListener('click', clickFunc)
 
-        this.mouseoverFunc=e=>{
+        this.mouseoverFunc = e => {
             let $t = $(e.target);
             if ($t.hasClass('xntree-item') || $t.parents('.xntree-item').get(0)) {
                 let $item = $t;
@@ -298,7 +315,7 @@ class xnTree {
                 }
                 let id = $item.get(0).getAttribute('data-id')
                 let node = this.getNodeById(id)
-                if(this.option.on.hoverNode){
+                if (this.option.on.hoverNode) {
                     this.option.on.hoverNode(node, $t, e)
                 }
             }
@@ -374,13 +391,18 @@ class xnTree {
         this.container.addEventListener('scroll', scrollFunc)
     }
 
-    refreshDom(justScroll) {
+    refreshDom(justScroll, needLocate) {
         this.index = 0;
         this.openNumber = 0;
+        this.currentNumber = 0;
+        this.calcCurrent=true;
         let dom = this._rendHTML(this.data, 0, justScroll);
         this.container.querySelector(".xntree-cont").innerHTML = dom;
         if (!justScroll) {
             this.scrollDom.style.height = this.openNumber * this.option.lineHeight + 'px'
+            if (needLocate) {
+                this.container.scrollTo(0, this.currentNumber * this.option.lineHeight)
+            }
         }
         this.setScrollWidth();
     }
@@ -389,13 +411,13 @@ class xnTree {
         if (el.id == el.onId) {
             return;
         }
-        if(this.option.disableMoveNode==true ){
+        if (this.option.disableMoveNode == true) {
             return;
         }
 
-        if(typeof this.option.disableMoveNode=='function'){
-            let dontMove=this.option.disableMoveNode(this.getNodeById(el.id),this.getNodeById(el.onId),el.dir)
-            if(dontMove){
+        if (typeof this.option.disableMoveNode == 'function') {
+            let dontMove = this.option.disableMoveNode(this.getNodeById(el.id), this.getNodeById(el.onId), el.dir)
+            if (dontMove) {
                 return;
             }
         }
@@ -485,14 +507,14 @@ class xnTree {
     }
 
     setNodesShow(node) {
-        if(!node){
+        if (!node) {
             return;
         }
         let pId = node[this.option.pId];
         let pNode = this.flatList[pId];
         if (!node.$show) {
             node.$show = true;
-            if(pNode){
+            if (pNode) {
                 for (let i = 0; i < pNode.children.length; i++) {
                     pNode.children[i].$show = true;
                 }
@@ -501,10 +523,10 @@ class xnTree {
         this.setNodesShow(pNode)
     }
 
-    setSelectKey(key, triggerClick) {
+    setSelectKey(key, triggerClick, needLocate) {
         this.clicked = this.getNodeById(key);
         this.setNodesShow(this.clicked);
-        this.refreshDom()
+        this.refreshDom(false, needLocate)
         if (triggerClick) {
             this.trigger('clickNode', this.container.querySelector('.xntree-item[data-id="' + key + '"]'), this.clicked, key)
         }
@@ -744,7 +766,7 @@ class xnTree {
             let l = list[i];
             if (!dontSetData) {
                 l.$level = level;
-                l.$show = this.option.autoOpen(l, level)
+                l.$show = l.$show || this.option.autoOpen(l, level)
                 if (!this.option.pId) {
                     l.$pId = pNode[this.option.id];
                 }
@@ -817,6 +839,7 @@ class xnTree {
         this.container.removeEventListener('scroll', this.scrollFunc);
         this.data = null;
         this.flatList = null;
+        this.resizeObserver.unobserve(this.container)
     }
 
     revertListToTree(data) {
@@ -839,22 +862,31 @@ class xnTree {
         return nd;
     }
 
-    revertTreeToList(treedata){
-        let list=[];
-        this._revertTreeToListFunc(treedata,list);
+    revertTreeToList(treedata) {
+        let list = [];
+        this._revertTreeToListFunc(treedata, list);
         return list;
     }
 
-    _revertTreeToListFunc(treedata,list){
-        for(let i=0;i<treedata.length;i++){
-            let item=$.extend(true,{},treedata[i]);
+    _revertTreeToListFunc(treedata, list) {
+        for (let i = 0; i < treedata.length; i++) {
+            let item = $.extend(true, {}, treedata[i]);
             delete item.children;
             list.push(item);
-            if(treedata[i].children){
-                this._revertTreeToListFunc(treedata[i].children,list);
+            if (treedata[i].children) {
+                this._revertTreeToListFunc(treedata[i].children, list);
             }
         }
     }
+
+    getData() {
+        return this.data;
+    }
+
+    returnFlatData() {
+        return this.flatList
+    }
+
 }
 
 window.xnTree = xnTree;
