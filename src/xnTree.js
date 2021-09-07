@@ -543,9 +543,10 @@ class xnTree {
         }
         if (setClick) {
             this.clicked = node
-            $(this.container).find(".xntree-item.on").removeClass('on')
-            $(p).addClass('on')
+            // $(this.container).find(".xntree-item.on").removeClass('on')
+            // $(p).addClass('on')
         }
+        this.refreshDom()
 
     }
 
