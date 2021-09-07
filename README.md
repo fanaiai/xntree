@@ -21,6 +21,9 @@
 
 #2021/09/07 V1.1.1(已发布)
 + 更新方法 setSelectKey(key, triggerClick, needLocate)，triggerClick：Boolean，是否触发点击回调，needLocate:Boolean，是否自动定位到选中节点
++ 添加lazyLoad参数，是否需要异步加载数据
+  添加属性方法 option={on:{loadData: async (node){return new Promise((resolve)=>{resolve(newNodes)})}}},
+  在loadData中异步获取数据
 
 # 2021/07/21 V1.0.1(已发布)
 + 增加方法：setSelectKey(key)，设置当前选中节点

@@ -9,6 +9,7 @@ let defaultOption = {
     id: 'id',
     lineHeight: 32,
     dataType: 'tree',
+    lazyLoad:false,
     // pId: 'parentid',
     selectType: 'checkbox',//radio,null
     checkDisabled: function (d) {
@@ -167,8 +168,8 @@ class xnTree {
 
     _rendOneNode(l, span, level, open) {
         let pre = '<div class="xn-tree-icons">'
-        if (l.$show && l.children && l.children[0]) {
-            pre += this.slidedownHTML[l.children[0].$show ? 'down' : 'up']
+        if ((l.$show && l.children && l.children[0])||this.option.lazyLoad) {
+            pre += this.slidedownHTML[(l.children && l.children[0] && l.children[0].$show) ? 'down' : 'up']
         } else {
             pre += '<a></a>'
         }
@@ -678,7 +679,14 @@ class xnTree {
         // oldDom.innerHTML = dom.innerHTML;
     }
 
-    addNode(id, node) {//新增节点
+    addNodes(id,nodes,open){
+        for(let i=nodes.length-1;i>=0;i--){
+            this._addOneNode(id,nodes[i],open)
+        }
+        this.refreshDom();
+    }
+
+    _addOneNode(id,node,open){
         let pNode = this.getNodeById(id);
         if (!pNode) {
             node.$level = 0;
@@ -695,12 +703,15 @@ class xnTree {
         let $level = pNode.$level + 1;
         node.$level = $level;
         node[this.option.pId || '$pId'] = id;
-        if (pNode.children[0] && pNode.children[0].$show) {
+        if ((pNode.children[0] && pNode.children[0].$show)||open) {
             node.$show = true;
         }
         pNode.children.unshift(node);
         this.flatList[node[this.option.id]] = node;
         this.flatListKeys.push(node[this.option.id]);
+    }
+    addNode(id, node) {//新增节点
+        this._addOneNode(id,node);
         this.refreshDom();
         // let [h, icon, dom] = this._rendOneNode(node, false, $level, true);
         // this.container.querySelector('[data-id="' + id + '"]').after(dom)
@@ -795,14 +806,29 @@ class xnTree {
         return false;
     }
 
-    slideEvent($t) {
-        let p = $t.parents(".xntree-item").get(0)
-        let id = p.getAttribute('data-id');
-        let node = this.getNodeById(id);
+    openChildren(node){
         for (let i = 0; i < node.children.length; i++) {
             node.children[i].$show = !node.children[i].$show
         }
         this.refreshDom()
+    }
+
+    async slideEvent($t) {
+
+        let p = $t.parents(".xntree-item").get(0)
+        let id = p.getAttribute('data-id');
+        let node = this.getNodeById(id);
+        if(node.children && node.children.length>=0){
+            node.$$loaded=true;
+        }
+        if(node.$$loaded||!this.option.lazyLoad){
+            this.openChildren(node)
+        }
+        else{
+            let nodes=await this.option.on.loadData(node);
+            node.$$loaded=true;
+            this.addNodes(id,nodes,true)
+        }
     }
 
 
