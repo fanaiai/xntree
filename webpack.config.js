@@ -29,7 +29,7 @@ module.exports = (env) => {
             new HtmlWebpackPlugin({
                 template: './index.html',
             }),
-            new UglifyJsPlugin(),
+            // new UglifyJsPlugin(),
             new CopyPlugin({
                 patterns: [
                     {
@@ -66,21 +66,26 @@ module.exports = (env) => {
         optimization: {},
         module: {
             rules: [
-                {
-                    test: /\.js$/,
-                    loader: "babel-loader",
-                    options: {
-                        presets: [
-                            ['babel-preset-env', {
-                                targets: {
-                                    browsers: ['> 1%']
-                                },
-                                debug: true
-                            }]
-                        ],
-                        "plugins": ["transform-object-rest-spread"]
-                    }
-                },
+                // {
+                //     test: /\.js$/,
+                //     loader: "babel-loader",
+                //     options: {
+                //         presets: [
+                //             ['@babel/preset-env', {
+                //                 targets: {
+                //                     browsers: ['> 1%']
+                //                 },
+                //             }]
+                //         ],
+                //         "plugins": ["@babel/plugin-transform-runtime"]
+                //     }
+                // },
+                // {
+                //     loader: "babel-loader",
+                //     options: {
+                //         "plugins": ["@babel/plugin-transform-runtime"]
+                //     }
+                // },
                 {
                     test: /\.css$/i,
                     use: ['style-loader', 'css-loader'],

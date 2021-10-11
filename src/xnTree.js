@@ -31,7 +31,7 @@ let defaultOption = {
     addChildNode: function (d) {
         return true;
     }
-}
+};
 
 class xnTree {
     constructor(container, data, option) {
@@ -914,7 +914,7 @@ class xnTree {
         return this.flatList
     }
 
-}
+};
 
 window.xnTree = xnTree;
 export default xnTree;
