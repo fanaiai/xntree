@@ -499,8 +499,9 @@ class xnTree {
         let nextLevel=null;
         let dir = ''
         let pos = $dom.get(0).getBoundingClientRect();
-        let top = pos.top, top1 = top + pos.height*2 / 5, top2 = top + pos.height * 3 / 5,
-            top4 = top + pos.height;
+        let pPos=this.container.getBoundingClientRect()
+        let top = pos.top-pPos.top, top1 = pos.top + pos.height*2 / 5, top2 = pos.top + pos.height * 3 / 5,
+            top4 = pos.top + pos.height;
         let etop = e.clientY;
         let y, x;
         let curLevel=$dom.get(0).getAttribute('data-level');
@@ -508,17 +509,17 @@ class xnTree {
         let isindent=e.target.classList.contains('xn-indent');
 
 
-        x = pos.left + ($dom.find(".xn-indent").el.length-1) * 15;
+        x = pos.left-pPos.left + ($dom.children(".xn-indent").el.length) * 15+15;
         if (etop <= top1) {
             dir = 'up'
-            y = top - this.container.getBoundingClientRect().top + this.container.scrollTop;
+            y = top  + this.container.scrollTop;
         }
         if (etop > top1 && etop <= top2) {
             dir = 'on'
         }
         if (etop > top2) {
             dir = 'down'
-            y = top4 - this.container.getBoundingClientRect().top + this.container.scrollTop;
+            y = top+pos.height  + this.container.scrollTop;
             if(isindent && curLevel!=siblingLevel){
                 nextLevel=($dom.children('.xn-indent').el).length-($dom.children('.xn-indent').el).indexOf(e.target);
                 if(curLevel-nextLevel<siblingLevel){
