@@ -58,6 +58,8 @@
     display: inline-block;
     width:15px;
     flex: 0 0 15px;
+    line-height: inherit;
+    height:100%;
 }
 .xntree-outer .xn-checkbox,.xntree-outer .xn-radio{
     width:14px;
@@ -102,7 +104,7 @@
     height: 1px;
     background: #333;
     position: absolute;
-    display: none;
+    /*display: none;*/
 }
 .xntree-outer .xntree-item{
     user-select: none;
@@ -111,7 +113,10 @@
 .xntree-outer .xntree-item.xn-onmoving{
     background: var(--xntree-moving-color);
 }
-.xntree-outer .xntree-item:not(.xn-onmoving,.on):hover{
+/*.xntree-outer .xntree-item:not(.xn-onmoving,.on):hover{*/
+/*    background: var(--xntree-hover-color);*/
+/*}*/
+.xntree-outer:not(.xn-moving) .xntree-item:not(.on):hover{
     background: var(--xntree-hover-color);
 }
 .xntree-outer .xn-searchedkey{

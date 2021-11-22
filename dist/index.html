@@ -53,7 +53,7 @@
             cursor: pointer;
         }
     </style>
-<!--    <script src="/xntree.min.js"></script>-->
+    <script src="./dist/xntree.min.js"></script>
 </head>
 <body>
 <div class="xn-tree-container">
@@ -129,7 +129,7 @@
         checkDisabled: function (d) {
         },
         autoOpen: function (d, level) {
-            return level <= 0;
+            return level <= 3;
         },
         checkSticky: {//check关联
             on: '',//p,自动勾选父，c自动勾选子，function
@@ -156,7 +156,7 @@
                 console.log(checkedData);
             },
             moveChange: (movedNode, currentData) => {
-                console.log(currentData);
+                // console.log(currentData);
             }
         }
     }

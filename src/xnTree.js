@@ -350,10 +350,11 @@ class xnTree {
                     let $onDom = $t.parents('.xntree-item').eq(0);
                     el.$onDom = $onDom;
                     el.onId = $onDom.attr("data-id")
-                    let [dir, x, y] = this.getMovePos($onDom, e)
+                    let [dir, x, y,nextLevel] = this.getMovePos($onDom, e)
                     el.dir = dir;
                     el.y = y;
                     el.x = x;
+                    el.nextLevel=nextLevel;
                     if (el.dir == 'on') {
                         el.$onDom.addClass('xn-onmoving')
                         this.movedom.style.display = 'none'
@@ -361,6 +362,7 @@ class xnTree {
                         this.movedom.style.top = el.y + 'px'
                         this.movedom.style.left = el.x + 'px'
                         this.movedom.style.display = 'block'
+                        this.movedom.style.width = 'calc(100% - '+el.x+'px)'
                     }
                 }
                 move = true;
@@ -409,6 +411,14 @@ class xnTree {
     }
 
     moveItem(el) {
+        // if(el.isNext){
+        //     el.onId=
+        // }
+        let nextLevel=el.nextLevel
+        while(el.nextLevel){
+            el.onId=this.flatList[el.onId][this.option.pId];
+            el.nextLevel--;
+        }
         if (el.id == el.onId) {
             return;
         }
@@ -438,7 +448,7 @@ class xnTree {
             this.flatList[el.onId].children = [];
             hasChild = false;
         }
-        if (el.dir == 'on' || (hasChild && el.dir == 'down' && this.flatList[el.onId].children[0] && this.flatList[el.onId].children[0].$show)) {//1.在节点上，2.当节点为展开状态，鼠标在节点下方，统一做在节点上的操作
+        if (el.dir == 'on' || (hasChild && el.dir == 'down' && this.flatList[el.onId].children[0] && this.flatList[el.onId].children[0].$show && !nextLevel)) {//1.在节点上，2.当节点为展开状态，鼠标在节点下方，统一做在节点上的操作
             this.flatList[el.id][this.option.pId] = el.onId;
             this.flatList[el.onId].children.unshift(this.flatList[el.id])
             this.flatList[el.id].$show = this.flatList[el.onId].children[1] && this.flatList[el.onId].children[1].$show;
@@ -449,7 +459,7 @@ class xnTree {
             return;
         }
         let pNode = this.flatList[this.flatList[el.onId][this.option.pId]];
-        if (!pNode) {
+        if ((!pNode) || (this.flatList[el.onId][this.option.id]==this.flatList[el.onId][this.option.pId])) {//有的时候跟节点的id和pid是同一个值
             pNode = {
                 children: this.data
             }
@@ -485,14 +495,20 @@ class xnTree {
     }
 
     getMovePos($dom, e) {
+        let isNext=false;
+        let nextLevel=null;
         let dir = ''
         let pos = $dom.get(0).getBoundingClientRect();
-        let top = pos.top, top1 = top + pos.height / 4, top2 = top + pos.height * 3 / 4,
+        let top = pos.top, top1 = top + pos.height*2 / 5, top2 = top + pos.height * 3 / 5,
             top4 = top + pos.height;
         let etop = e.clientY;
         let y, x;
-        // console.log(this.container.getBoundingClientRect().top,top,etop);
-        x = pos.left + $dom.find(".xn-indent").length * 15;
+        let curLevel=$dom.get(0).getAttribute('data-level');
+        let siblingLevel=$dom.get(0).nextSibling?$dom.get(0).nextSibling.getAttribute('data-level'):null;
+        let isindent=e.target.classList.contains('xn-indent');
+
+
+        x = pos.left + ($dom.find(".xn-indent").el.length-1) * 15;
         if (etop <= top1) {
             dir = 'up'
             y = top - this.container.getBoundingClientRect().top + this.container.scrollTop;
@@ -503,8 +519,15 @@ class xnTree {
         if (etop > top2) {
             dir = 'down'
             y = top4 - this.container.getBoundingClientRect().top + this.container.scrollTop;
+            if(isindent && curLevel!=siblingLevel){
+                nextLevel=($dom.children('.xn-indent').el).length-($dom.children('.xn-indent').el).indexOf(e.target);
+                if(curLevel-nextLevel<siblingLevel){
+                    nextLevel=curLevel-siblingLevel;
+                }
+                x=x-nextLevel*15-15;
+            }
         }
-        return [dir, x, y];
+        return [dir, x, y,nextLevel];
     }
 
     setNodesShow(node) {
